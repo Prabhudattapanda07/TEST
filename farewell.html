@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Farewell — Beloved Seniors</title>
+    <style>
+        :root {
+            --bg: #0f1724;
+            --card: #0b1220;
+            --accent: #ffb86b;
+            --muted: #9aa4b2;
+            --glass: rgba(255, 255, 255, 0.04)
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            height: 100%;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial;
+            color: #e6eef8;
+            background: linear-gradient(180deg, #071028 0%, #0f1724 60%);
+        }
+
+        .wrap {
+            max-width: 1100px;
+            margin: 32px auto;
+            padding: 28px;
+            border-radius: 18px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent);
+            box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .logo {
+            width: 76px;
+            height: 76px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #ffecd2, #ffb86b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #2b2b2b;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        p.lead {
+            margin: 6px 0 18px;
+            color: var(--muted);
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            background: var(--glass);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 8px 12px;
+            border-radius: 10px;
+            color: #dff0ff;
+            cursor: pointer;
+        }
+
+        .btn.primary {
+            background: linear-gradient(90deg, var(--accent), #ff7bb0);
+            color: #071028;
+            font-weight: 700;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 14px;
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 30px rgba(2, 6, 23, 0.6);
+        }
+
+        .avatar {
+            width: 100%;
+            height: 140px;
+            border-radius: 10px;
+            background: #0c1420;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            overflow: hidden;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .name {
+            font-weight: 700;
+        }
+
+        .role {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8));
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-card {
+            width: min(880px, 96%);
+            background: linear-gradient(180deg, #071028, #07182b);
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(2, 6, 23, 0.7);
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 12px;
+        }
+
+        .modal-left {
+            border-radius: 8px;
+            overflow: hidden;
+            background: #071022;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-left img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-right {
+            padding: 12px;
+        }
+
+        .message {
+            white-space: pre-wrap;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 12px;
+            border-radius: 8px;
+            color: #dcecff;
+        }
+
+        .modal-close {
+            position: absolute;
+            right: 26px;
+            top: 26px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: var(--glass);
+            cursor: pointer;
+        }
+
+        .confetti {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .confetti i {
+            position: absolute;
+            width: 10px;
+            height: 18px;
+            transform-origin: center;
+            opacity: .95;
+        }
+
+        #games h2 {
+            margin: 0 0 12px 0;
+            color: var(--accent);
+        }
+
+        #wheelCanvas {
+            margin-top: 10px;
+            border-radius: 12px;
+            background: #0b1220;
+            display: block;
+        }
+
+        #spinResult {
+            margin-top: 10px;
+            font-weight: 700;
+            color: #dff0ff;
+        }
+
+        #confettiCatchArea {
+            position: relative;
+            height: 150px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        #wheelPointer {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 30px solid var(--accent);
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="confetti" id="confetti"></div>
+    <main class="wrap">
+        <header>
+            <div class="logo">❤️FP</div>
+            <div>
+                <h1>Farewell — Our Beloved Seniors</h1>
+                <p class="lead">18 stars, countless memories. Click any student to see a surprise message.</p>
+            </div>
+        </header>
+
+        <div class="controls">
+            <button class="btn primary" id="surpriseAll">Show All Messages</button>
+            <button class="btn" id="toggleMusic">Play Music</button>
+            <button class="btn" id="printBtn">Save / Print Page</button>
+            <button class="btn primary" onclick="launchConfetti()">Celebrate 🎉</button>
+        </div>
+
+        <section class="grid" id="grid"></section>
+
+        <!-- Games Section -->
+        <div id="games">
+            <h2>🎮 Games & Fun</h2>
+
+            <!-- Spin Wheel -->
+            <div style="margin-bottom:20px;position:relative;">
+                <canvas id="wheelCanvas" width="300" height="300"></canvas>
+                <div id="wheelPointer"></div>
+                <button class="btn primary" id="spinWheelBtn">🎡 Spin the Wheel!</button>
+                <div id="spinResult"></div>
+            </div>
+
+            <!-- Confetti Catch -->
+            <div>
+                <p style="margin:0 0 6px 0;">🎉 Catch the falling confetti! Click to score points.</p>
+                <div id="confettiCatchArea"></div>
+                <div id="catchScore" style="margin-top:6px;color:#dff0ff;font-weight:700;">Score: 0</div>
+                <button class="btn primary" id="startCatchBtn">Start Confetti Catch</button>
+            </div>
+
+        </div>
+
+        <footer>Made with ❤️ — Surprise them and have a wonderful farewell!</footer>
+    </main>
+
+    <div class="modal" id="modal">
+        <div class="modal-card" role="dialog" aria-modal="true">
+            <div class="modal-left" id="modalImageContainer">
+                <img id="modalImg" src="" alt="Student photo" />
+            </div>
+            <div class="modal-right">
+                <h2 id="modalName">Name</h2>
+                <p class="role" id="modalIndex">Student #</p>
+                <div class="message" id="modalMsg">Message</div>
+                <div style="margin-top:12px;display:flex;gap:8px">
+                    <button class="btn primary" id="prevBtn">Prev</button>
+                    <button class="btn primary" id="nextBtn">Next</button>
+                    <button class="btn" id="closeModal">Close</button>
+                </div>
+            </div>
+        </div>
+        <button class="modal-close" id="modalCloseX">✕</button>
+    </div>
+
+    <audio id="bgMusic" loop src="music/bandana.mp3"></audio>
+
+    <script>
+        // --- Students ---
+// --- Students ---
+const students = [
+  { name: 'Student 1', photo: 'photos/1.jpg', message: 'Dear Student 1, thank you for the laughs and leadership.' },
+  { name: 'Student 2', photo: 'photos/2.jpg', message: 'Student 2 — your energy made every day brighter.' },
+  { name: 'Student 3', photo: 'photos/3.jpg', message: 'Student 3, keep chasing your dreams.' },
+  { name: 'Student 4', photo: 'photos/4.jpg', message: 'Thank you Student 4 for the late-night study sessions.' },
+  { name: 'Student 5', photo: 'photos/5.jpg', message: 'We will miss your smile.' },
+  { name: 'Student 6', photo: 'photos/6.jpg', message: 'Good luck — the future is yours.' },
+  { name: 'Student 7', photo: 'photos/7.jpg', message: 'Student 7, the campus won\'t be the same.' },
+  { name: 'Student 8', photo: 'photos/8.jpg', message: 'Thanks for always helping others.' },
+  { name: 'Student 9', photo: 'photos/9.jpg', message: 'To Student 9 — unforgettable memories.' },
+  { name: 'Student 10', photo: 'photos/10.jpg', message: 'Thanks for being you.' },
+  { name: 'Student 11', photo: 'photos/11.jpg', message: 'Proud of you.' },
+  { name: 'Student 12', photo: 'photos/12.jpg', message: 'Keep shining.' },
+  { name: 'Student 13', photo: 'photos/13.jpg', message: 'Student 13, many more adventures await.' },
+  { name: 'Student 14', photo: 'photos/14.jpg', message: 'Your kindness will be remembered.' },
+  { name: 'Student 15', photo: 'photos/15.jpg', message: 'Thank you for the memories.' },
+  { name: 'Student 16', photo: 'photos/16.jpg', message: 'Farewell and good luck.' },
+  { name: 'Student 17', photo: 'photos/17.jpg', message: 'We will cheer for you always.' },
+  { name: 'Student 18', photo: 'photos/18.jpg', message: 'Forever part of our family.' }
+];
+
+// --- Grid & Modal ---
+const grid = document.getElementById('grid');
+const modal = document.getElementById('modal');
+const modalImg = document.getElementById('modalImg');
+const modalName = document.getElementById('modalName');
+const modalMsg = document.getElementById('modalMsg');
+const modalIndex = document.getElementById('modalIndex');
+const bgMusic = document.getElementById('bgMusic');
+let current = 0;
+
+function createCard(student, idx) {
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.tabIndex = 0;
+  el.innerHTML = `
+    <div class="avatar"><img src="${student.photo}" alt="${student.name}" onerror="this.style.filter='grayscale(80%)';this.alt='No image'"/></div>
+    <div class="name">${student.name}</div>
+    <div class="role">Student ${idx+1}</div>
+  `;
+  el.addEventListener('click', ()=>openModal(idx));
+  el.addEventListener('keyup', e=>{ if(e.key==='Enter') openModal(idx); });
+  return el;
+}
+
+function renderGrid(){ grid.innerHTML=''; students.forEach((s,i)=>grid.appendChild(createCard(s,i))); }
+
+function openModal(idx){ current=idx; updateModal(); modal.classList.add('open'); }
+function closeModal(){ modal.classList.remove('open'); }
+function updateModal(){ const s=students[current]; modalImg.src=s.photo; modalName.textContent=s.name; modalIndex.textContent='Student '+(current+1); modalMsg.textContent=s.message; }
+
+document.getElementById('closeModal').addEventListener('click', closeModal);
+document.getElementById('modalCloseX').addEventListener('click', closeModal);
+document.getElementById('prevBtn').addEventListener('click',()=>{current=(current-1+students.length)%students.length;updateModal();});
+document.getElementById('nextBtn').addEventListener('click',()=>{current=(current+1)%students.length;updateModal();});
+document.getElementById('printBtn').addEventListener('click',()=>window.print());
+document.getElementById('surpriseAll').addEventListener('click',()=>{ let i=0; openModal(0); const iv=setInterval(()=>{ i++; if(i>=students.length){clearInterval(iv); return;} current=i; updateModal(); },1400); });
+
+const toggleMusicBtn = document.getElementById('toggleMusic');
+toggleMusicBtn.addEventListener('click', ()=>{ if(bgMusic.paused){ bgMusic.play(); toggleMusicBtn.textContent='Pause Music';} else {bgMusic.pause(); toggleMusicBtn.textContent='Play Music';} });
+
+renderGrid();
+
+// --- Spin Wheel Game ---
+const wheelCanvas = document.getElementById('wheelCanvas');
+const ctx = wheelCanvas.getContext('2d');
+const spinBtn = document.getElementById('spinWheelBtn');
+const spinResult = document.getElementById('spinResult');
+let spinning = false;
+let currentAngle = 0;
+
+function drawWheel() {
+  const segments = students.length;
+  const anglePer = 2*Math.PI/segments;
+  for(let i=0;i<segments;i++){
+    ctx.beginPath();
+    ctx.moveTo(150,150);
+    ctx.arc(150,150,150,i*anglePer,(i+1)*anglePer);
+    ctx.fillStyle = i%2===0 ? '#ff7bb0' : '#ffb86b';
+    ctx.fill();
+    ctx.strokeStyle='#0f1724';
+    ctx.stroke();
+    ctx.save();
+    ctx.translate(150,150);
+    ctx.rotate((i+0.5)*anglePer);
+    ctx.fillStyle='#071028';
+    ctx.font='14px Arial';
+    ctx.textAlign='right';
+    ctx.fillText(students[i].name,140,5);
+    ctx.restore();
+  }
+}
+drawWheel();
+
+spinBtn.addEventListener('click', ()=>{
+  if(spinning) return;
+  spinning = true;
+  let spins = Math.random()*10+10;
+  let duration = 3000;
+  let start = null;
+  function animate(t){
+    if(!start) start=t;
+    let progress = (t-start)/duration;
+    if(progress>1) progress=1;
+    currentAngle += spins*(1-progress);
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.clearRect(0,0,300,300);
+    ctx.translate(150,150);
+    ctx.rotate(currentAngle);
+    ctx.translate(-150,-150);
+    drawWheel();
+    ctx.setTransform(1,0,0,1,0,0);
+    if(progress<1) requestAnimationFrame(animate);
+    else {
+      spinning=false;
+      const segment = Math.floor(((2*Math.PI - (currentAngle%(2*Math.PI))) / (2*Math.PI) * students.length)) % students.length;
+      spinResult.textContent = `🎉 NOW: ${students[segment].name}'S TURN`;
+    }
+  }
+  requestAnimationFrame(animate);
+});
+
+// --- Confetti Catch Game ---
+const catchArea = document.getElementById('confettiCatchArea');
+const startCatchBtn = document.getElementById('startCatchBtn');
+const catchScoreEl = document.getElementById('catchScore');
+let confettis=[], score=0, catchInterval;
+
+startCatchBtn.addEventListener('click', ()=>{
+  score=0; catchScoreEl.textContent='Score: 0';
+  catchArea.innerHTML='';
+  confettis=[];
+  clearInterval(catchInterval);
+  catchInterval=setInterval(()=>spawnConfetti(),300);
+});
+
+function spawnConfetti(){
+  const conf = document.createElement('div');
+  conf.style.position='absolute';
+  conf.style.width='12px'; conf.style.height='12px';
+  conf.style.background=`hsl(${Math.random()*360},90%,65%)`;
+  conf.style.top='0px'; conf.style.left=Math.random()*(catchArea.offsetWidth-12)+'px';
+  conf.style.borderRadius='50%';
+  catchArea.appendChild(conf);
+  confettis.push(conf);
+
+  conf.addEventListener('click', ()=>{
+    score++;
+    catchScoreEl.textContent='Score: '+score;
+    conf.remove();
+  });
+
+  let fall = setInterval(()=>{
+    let top = parseFloat(conf.style.top);
+    if(top>catchArea.offsetHeight){
+      conf.remove();
+      clearInterval(fall);
+    } else conf.style.top=(top+4)+'px';
+  },20);
+}
+// --- Confetti for page load & Celebrate button ---
+function launchConfetti() {
+    const confettiContainer = document.getElementById('confetti');
+    const colors = ['#ff7bb0','#ffb86b','#7efcff','#fffa65','red'];
+    for(let i=0;i<300;i++){
+        const conf = document.createElement('i');
+        conf.style.background = colors[Math.floor(Math.random()*colors.length)];
+        conf.style.left = Math.random()*window.innerWidth + 'px';
+        conf.style.top = Math.random()*-window.innerHeight + 'px';
+        const size = Math.random()*10 + 6;
+        conf.style.width = size + 'px';
+        conf.style.height = size + 'px';
+        conf.style.transform = `rotate(${Math.random()*360}deg)`;
+        conf.style.position = 'absolute';
+        conf.style.opacity = Math.random();
+        conf.style.pointerEvents = 'none';
+        // square shape, remove borderRadius
+        conf.style.borderRadius = '0';
+        confettiContainer.appendChild(conf);
+
+        let fallSpeed = Math.random()*10 + 2;
+        let rotateSpeed = Math.random()*6 + 3;
+        const fall = () => {
+            let top = parseFloat(conf.style.top);
+            if(top < window.innerHeight){
+                conf.style.top = top + fallSpeed + 'px';
+                conf.style.transform = `rotate(${parseFloat(conf.style.transform.replace('rotate(','').replace('deg)','')) + rotateSpeed}deg)`;
+                requestAnimationFrame(fall);
+            } else {
+                conf.remove();
+            }
+        };
+        requestAnimationFrame(fall);
+    }
+}
+
+// launch confetti on page load
+window.addEventListener('load', launchConfetti);
+
+// launch confetti on Celebrate button click
+document.querySelector('button[onclick="launchConfetti()"]').addEventListener('click', launchConfetti);
+
+
+
+    </script>
+</body>
+
+</html>
